@@ -19,7 +19,7 @@ class RewardStatusController extends Controller
                 ->where('campaigns.name', 'Cashback')
                 ->where('awarded_at', Carbon::today()->toDateString())
                 ->select(
-                    DB::raw("CONCAT(CAST(amount AS UNSIGNED), ' €') as amount"),
+                    DB::raw("CONCAT(CAST(amount AS UNSIGNED), '€') as amount"),
                     DB::raw("DATE_FORMAT(rewards.awarded_at, '%d-%M-%Y') as awarded_at"))
                 ->first();
 

@@ -76,7 +76,7 @@ class CashbackController extends Controller
 
             return response()->json(['success' => true, 'data' => [ 'won' => true,
                                                                     'winner_name' => $user->localeName($this->getLocale())?->name ?? $user->name,
-                                                                    'reward' => $reward]], 200);
+                                                                    'reward' => $cashbackCampaign->reward_amount . '€']], 200);
 
         } catch (\Exception $e) {
             DB::rollBack();
