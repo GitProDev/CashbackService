@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Models\MerchantTranslation;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -44,5 +45,23 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function translations()
+    {
+        return $this->hasMany(MerchantTranslation::class, 'user_id');
+    }
+
+    public function localeName($locale = null)
+    {
+        $locale = $locale ?? app()->getLocale();
+
+        return $this->hasOne(\App\Models\MerchantTranslation::class, 'user_id')
+            ->where('locale', $locale)
+            ->withDefault(function () {
+                return $this->translations()
+                    ->where('locale', 'en')
+                    ->first();
+            })->first();
     }
 }
